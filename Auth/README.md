@@ -1,141 +1,153 @@
-# Authentication App
+# Authentication Function App
 
 ## Overview
 
-This authentication app is designed as a practice project for exploring authentication mechanisms in a serverless environment using Azure Functions. It is **not intended for use in production environments**.
+A serverless authentication system built with Azure Functions that provides comprehensive user management capabilities including registration, authentication, and account management. This app demonstrates best practices for implementing secure authentication in a cloud-native environment.
 
-The app features several authentication-related functions, integrated with Azure Services for scalable, serverless execution. It supports user registration, login, password changes, and email verification with an emphasis on security, rate limiting, and handling edge cases like expired tokens.
+**Note**: This app is designed for learning and demonstration purposes and includes additional security considerations that would be needed for production use.
 
-### Key Features:
-- **Authentication**: Verifies user credentials using JWT tokens and an authentication guard.
-- **Rate Limiting**: Protects against abuse by limiting the number of requests a user or IP can make.
-- **Email Handling**: Email functionalities (like registration confirmation and password resets) are handled by another Azure Function app.
-- **Azure Integration**: The app utilizes Azure Queues for processing actions and Azure Table Storage for user data storage.
+## Technology Signature
 
-## Architecture
+- **Language**: Python 3.7+
+- **Framework**: Azure Functions v4
+- **Storage**: Azure Table Storage
+- **Message Processing**: Azure Queue Storage
+- **Authentication**: JWT (JSON Web Tokens)
+- **Scheduling**: Azure Functions Timer Trigger (CRON)
 
-## Authentication Workflow
-The authentication is based on a **JWT token** that is included in the request headers. The token is verified using the `authenticate` guard before granting access to any protected route.
+## Demonstrated Competencies
 
-- **Backend**: Built on Azure Functions (v4), all outputs are queued using Azure Queues.
-- **Data Storage**: Uses Azure Table Storage to store user information.
-- **Email Handling**: Another function app is responsible for sending emails such as registration confirmation and password reset.
+- Serverless API development
+- Token-based authentication system
+- Asynchronous event processing
+- Rate limiting implementation
+- Security best practices
+- Cloud service integration
 
-### Technologies Used:
-- **Azure Functions**: The app is built using Azure Functions to handle HTTP requests, queue triggers, and timer triggers.
-- **Azure Queues**: All outputs are queued for processing, ensuring asynchronous handling of actions like user registration.
-- **Azure Table Storage**: User data, including sensitive details like passwords (hashed), is stored securely in Azure Table Storage.
-- **Email Functionality**: Another Azure Function app handles user emails, including confirmations, password resets, etc.
+## System Context
 
-### Triggers Implemented:
-- **HTTP Triggers**: Handle incoming requests to functions like `register_email`, `login_email`, `logout_email`, etc.
-- **Queue Triggers**: Handle user-related actions by processing messages from Azure Queues.
-- **Timer Triggers**: Handles cleanup of expired tokens 
+The Authentication Function App serves as a standalone identity provider that can be integrated with various client applications. It handles the entire authentication lifecycle while delegating email notifications to a separate function app.
 
-- **Core Functions**:
-    - `register_email`: User registration.
-    - `login_email`: Login process.
-    - `logout_email`: Logout functionality.
-    - `delete_user_email`: Deletion of user account.
-    - `verify_email`: Email verification process.
-    - `notify_user`: User notifications.
-    - `forgot_password_email`: Forgot password email handling.
-    - `change_password_email`: Change password functionality.
-    - `resend_confirmation_token_email`: Resend verification token to the user.
-    - `authenticate`: A guard wrapper to secure routes by authenticating JWT tokens.
+## Features
 
-## How It Works
+### Core Authentication
 
-1. **User Registration**: When a user registers, the app checks for rate limiting (based on email, username, and IP address). If valid, a registration request is queued for further processing, including email verification.
+- **User Registration**: Create new user accounts with email verification
+- **Login/Logout**: Secure authentication with JWT tokens
+- **Password Management**: Reset and change password capabilities
+- **Email Verification**: Verification process for new registrations
+- **Account Management**: View and delete user accounts
 
-2. **Login and Logout**: The user’s credentials are validated, and after successful authentication, a JWT token is issued. The logout process invalidates the session and blacklists the token.
+### Security Features
 
-3. **Queue-Based Processing**: User-related actions (like registration, login, password reset) are processed asynchronously using Azure Queues. This helps maintain system scalability and reliability.
+- **JWT Authentication**: Token-based authentication with expiration
+- **Guard Middleware**: Decorator-based authentication for protected routes
+- **Rate Limiting**: Prevent abuse through request throttling
+- **IP Validation**: Additional security by tracking user IP addresses
+- **Token Blacklisting**: Prevent reuse of invalidated tokens
+- **Expired Token Cleanup**: Automatic maintenance via timer trigger
 
-4. **Email Confirmation**: The app uses another Azure Function app to handle user email confirmation. A confirmation token is generated upon registration and sent to the user.
+### Integration
 
-5. **Rate Limiting**: The app ensures that both users (by username or email) and IP addresses do not exceed a set number of requests in a given period.
+- **Queue-Based Processing**: Asynchronous handling of user events
+- **Email Notifications**: Integration with external email service
+- **Extensible Design**: Easy to integrate with other services
 
-### Example of the `authenticate` decorator:
+## Code Structure
 
-```python
-def authenticate(func):
-    @wraps(func)
-    async def wrapper(req, *args, **kwargs):
-        # Authentication logic goes here
-        ...
-    return wrapper
+- **`function_app.py`**: Main HTTP trigger endpoints
+- **`guard.py`**: Authentication middleware decorator
+- **`rate_limit.py`**: In-memory rate limiting implementation
+- **`active_cron_trigger.py`**: Timer trigger for token cleanup
+- **`queue_triggers.py`**: Queue processing functions
+- **`helper_functions.py`**: Utility functions for common operations
+
+## Setup and Configuration
+
+### Prerequisites
+
+- Azure subscription
+- Azure Functions Core Tools v4
+- Python 3.7+
+- Azure CLI (optional, for deployment)
+
+### Environment Variables
+
+The following environment variables need to be configured:
+
+```
+AzureWebJobsStorage=<Storage account connection string>
+SECRET_KEY=<JWT secret key>
+EMAIL_STORAGE_CONNECTION_STRING=<Connection string for email queue>
 ```
 
-## Setup and Deployment
+### Local Development
 
-## Prerequisites
+1. Clone the repository
+2. Install dependencies: `pip install -r requirements.txt`
+3. Set up local.settings.json with required environment variables
+4. Run locally: `func start`
 
-Before you begin, ensure you have the following installed on your local machine:
+### Testing
 
-- **Azure Functions Core Tools**: For running and testing Azure Functions locally.
-  - Install guide: [Install Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local)
-- **Azure CLI**: For managing Azure resources from the command line.
-  - Install guide: [Install Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
-- **Python 3.7+**: The authentication app is built using Python.
-  - Download Python: [Python Downloads](https://www.python.org/downloads/)
-- **Visual Studio Code (VS Code)** with the **Azure Functions Extension** (optional but recommended for local debugging).
-  - Install VS Code: [Download Visual Studio Code](https://code.visualstudio.com/)
-  - Azure Functions Extension: [Install Azure Functions Extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions)
+Use the provided test scripts in the `/tests` directory to test the functionality:
 
-## Step 1: Clone the Authentication App Repository
+- `test_register.sh` - Test user registration
+- `test_login.sh` - Test login functionality
+- `test_logout.sh` - Test logout functionality
+- `test_others.sh` - Test other API endpoints
 
-1. Open your terminal and run the following command to clone the repository:
+### Deployment
 
-    ```bash
-    git clone https://github.com/yungryce/authentication-FA.git
-    cd authentication-app
-    ```
-
-2. Ensure you are on the correct branch (e.g., `master`) and that the repository is up to date:
-
-    ```bash
-    git checkout master
-    git pull origin master
-    ```
-
-## Step 2: Set Up Your Local Environment
-
-### 1. Install Required Python Packages
-
-Create a virtual environment and install the necessary dependencies.
+Deploy to Azure Functions using Azure CLI or GitHub Actions:
 
 ```bash
-python -m venv .env
-source .env/bin/activate  # On Windows: .env\Scripts\activate
-pip install -r requirements.txt
+func azure functionapp publish <app-name>
 ```
 
-### 2. Start your function app locally:
-```bash
-func start
-```
+Or use the provided GitHub Action workflow in `.github/workflows/`.
 
-This will start your function app locally. You can now test your authentication endpoints.
+## Implementation Details
 
-## 3. Step 3: Test your functions
-You can use a tool like Postman or cURL to test your endpoints.
-```bash
-curl -X POST http://localhost:7071/api/register -H "Content-Type: application/json" -d '{"username": "testuser", "email": "test@example.com", "password": "TestPassword123", "first_name": "John", "last_name": "Doe"}'
-```
+### Authentication Flow
 
-## Step 4: Deploy the Functions to Azure
+1. User registers with email, username, and password
+2. Confirmation email is sent with verification token
+3. User verifies email by submitting token
+4. User can log in with verified credentials
+5. JWT token is issued and used for subsequent requests
+6. Protected routes use the `@authenticate` decorator
 
-Refer to the following Azure documentation to deploy your function apps:
+### Rate Limiting Implementation
 
-- [Deploy Python Azure Functions](https://docs.microsoft.com/en-us/azure/azure-functions/functions-develop-python)
-- [Azure Functions Documentation](https://docs.microsoft.com/en-us/azure/azure-functions/)
+The app implements a basic in-memory rate limiter with:
 
+- Per-user/email rate limits
+- Per-IP address rate limits
+- Configurable time windows and request thresholds
 
-## Known Limitations
+### Token Management
 
-- **OAuth**: The app does not currently support OAuth for authentication.
-- **Not for Production**: This app is intended for learning purposes only and is not designed for production environments.
-- **Scalability**: While the app uses Azure's serverless offerings, performance may degrade with extremely high traffic or large-scale data handling due to its practice nature.
-- **Security**: This app does not implement robust security measures like encryption for data at rest or in transit, which is crucial for real-world applications.
-- **Error Handling**: The app lacks comprehensive error handling, which is essential for robust applications.
+- Active tokens tracked in Azure Table Storage
+- Blacklisted tokens during logout
+- Expired tokens cleaned up daily via cron trigger
+
+## Limitations and Considerations
+
+- **In-Memory Rate Limiting**: Resets on function app restart
+- **OAuth**: No support for OAuth authentication
+- **Horizontal Scaling**: In-memory rate limiting does not work across instances
+- **Production Use**: Additional security measures would be needed for production
+- **Load Testing**: Not extensively tested for high load scenarios
+
+## Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch
+3. Submit a pull request
+
+## License
+
+[MIT License](LICENSE)

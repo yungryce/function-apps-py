@@ -1,0 +1,31 @@
+{
+  "project_identity": {
+    "type": "api",
+    "scope": "subdir",
+    "is_independent": true
+  },
+  "tech_stack": {
+    "primary": ["Python 3.7+", "Azure Functions v4"],
+    "secondary": ["Azure Table Storage", "Azure Queue Storage"],
+    "key_libraries": ["JWT", "Azure Functions Core Tools"]
+  },
+  "skill_manifest": {
+    "technical": [
+      "Serverless Architecture", 
+      "Authentication System Design", 
+      "Token-based Authentication",
+      "Rate Limiting Implementation",
+      "Asynchronous Processing"
+    ],
+    "domain": [
+      "Security", 
+      "Identity Management", 
+      "User Access Control"
+    ]
+  },
+  "relationships": {
+    "depends_on": ["EmailApp"],
+    "interfaces_with": ["Client Applications"],
+    "used_by": ["Frontend Services"]
+  }
+}

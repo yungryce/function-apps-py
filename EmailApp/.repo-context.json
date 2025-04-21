@@ -12,5 +12,9 @@
   "skill_manifest": {
     "technical": ["Serverless Architecture", "Asynchronous Processing", "Email Integration", "CI/CD"],
     "domain": ["Cloud Architecture", "Notification Systems", "User Management"]
+  },
+  "relationships": {
+    "used_by": ["Auth"],
+    "interfaces_with": ["SMTP Server", "Azure Storage"]
   }
 }

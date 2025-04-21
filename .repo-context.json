@@ -1,0 +1,37 @@
+{
+  "project_identity": {
+    "type": "monorepo",
+    "scope": "repository",
+    "is_independent": true
+  },
+  "tech_stack": {
+    "primary": ["Python 3.7+", "Azure Functions"],
+    "secondary": ["Azure Storage", "Azure KeyVault", "Azure Compute"],
+    "key_libraries": ["JWT", "Pillow", "Azure SDKs"]
+  },
+  "skill_manifest": {
+    "technical": [
+      "Serverless Architecture",
+      "Cloud Security",
+      "Event-driven Design",
+      "Asynchronous Processing",
+      "Service Integration"
+    ],
+    "domain": [
+      "Authentication Systems",
+      "User Management",
+      "Image Processing",
+      "Email Services",
+      "Infrastructure Automation"
+    ]
+  },
+  "relationships": {
+    "contains": [
+      "Auth",
+      "EmailApp",
+      "ImageApp",
+      "recaptcha_FA",
+      "startstopvm"
+    ]
+  }
+}
