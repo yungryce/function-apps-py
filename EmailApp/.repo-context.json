@@ -1,0 +1,16 @@
+{
+  "project_identity": {
+    "type": "serverless",
+    "scope": "microservice",
+    "is_independent": true
+  },
+  "tech_stack": {
+    "primary": ["Azure Functions", "Python 3.10+", "Azure Storage Queues"],
+    "secondary": ["SMTP Protocol", "GitHub Actions", "Azure KeyVault"],
+    "key_libraries": ["azure-functions", "azure-storage-queue", "smtplib"]
+  },
+  "skill_manifest": {
+    "technical": ["Serverless Architecture", "Asynchronous Processing", "Email Integration", "CI/CD"],
+    "domain": ["Cloud Architecture", "Notification Systems", "User Management"]
+  }
+}

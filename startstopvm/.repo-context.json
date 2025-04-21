@@ -1,0 +1,16 @@
+{
+  "project_identity": {
+    "type": "serverless",
+    "scope": "azure_function",
+    "is_independent": true
+  },
+  "tech_stack": {
+    "primary": ["Python 3.10+", "Azure Functions", "GitHub Actions"],
+    "secondary": ["Azure Compute Management", "Timer Triggers", "Azure Identity"],
+    "key_libraries": ["azure-functions", "azure-mgmt-compute", "azure-identity", "azure-storage-blob"]
+  },
+  "skill_manifest": {
+    "technical": ["Serverless Computing", "Cloud Automation", "CI/CD", "Python Development"],
+    "domain": ["Cloud Resource Management", "Cost Optimization", "DevOps", "Azure Administration"]
+  }
+}

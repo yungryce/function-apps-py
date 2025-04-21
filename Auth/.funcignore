@@ -1,0 +1,6 @@
+curl_requests.sh
+local.settings.json
+venv/
+.vscode/
+.git
+__pycache__/

@@ -1,0 +1,16 @@
+{
+  "project_identity": {
+    "type": "serverless",
+    "scope": "api_function",
+    "is_independent": true
+  },
+  "tech_stack": {
+    "primary": ["Azure Functions", "Python 3.9+", "Google reCAPTCHA Enterprise"],
+    "secondary": ["JSON APIs", "Cloud Authentication", "Error Handling"],
+    "key_libraries": ["azure.functions", "google-cloud-recaptchaenterprise", "google-auth"]
+  },
+  "skill_manifest": {
+    "technical": ["Serverless Computing", "API Development", "Cloud Integration", "Security Implementation"],
+    "domain": ["Bot Protection", "Security Engineering", "Cloud Architecture"]
+  }
+}

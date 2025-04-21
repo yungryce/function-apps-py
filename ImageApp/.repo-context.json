@@ -1,0 +1,16 @@
+{
+  "project_identity": {
+    "type": "serverless",
+    "scope": "application",
+    "is_independent": true
+  },
+  "tech_stack": {
+    "primary": ["Azure Functions", "Python 3.10+", "Azure Blob Storage"],
+    "secondary": ["GitHub Actions", "Pillow", "Azure CLI"],
+    "key_libraries": ["azure-functions", "azure-storage-blob", "Pillow"]
+  },
+  "skill_manifest": {
+    "technical": ["Serverless Architecture", "Image Processing", "CI/CD", "Cloud Storage"],
+    "domain": ["Cloud Development", "DevOps", "Media Processing"]
+  }
+}

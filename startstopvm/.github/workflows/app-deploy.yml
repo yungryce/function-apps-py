@@ -1,0 +1,56 @@
+name: Azure Functions Deploy
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Cache pip packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Cache Azure Functions Core Tools
+        uses: actions/cache@v3
+        with:
+          path: ~/.azure-functions-core-tools
+          key: ${{ runner.os }}-azure-functions-core-tools-v4-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-azure-functions-core-tools-v4-
+
+      - name: Install Azure Functions Core Tools
+        run: |
+          npm i -g azure-functions-core-tools@4 --unsafe-perm true
+
+      - name: Deploy to Azure Function App
+        run: |
+          source venv/bin/activate
+          func azure functionapp publish startstopvmapp --python
